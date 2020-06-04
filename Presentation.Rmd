@@ -1,0 +1,50 @@
+---
+title: "Presentation"
+author: "P. M. Cooper"
+date: "June 4, 2020"
+output: slidy_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## R Markdown
+
+This is an R Markdown presentation. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document.
+
+## Slide with Bullets
+
+- Bullet 1
+- Bullet 2
+- Bullet 3
+
+## Slide with R Output
+
+```{r, echo = FALSE}
+library(tidycensus)
+library(plotly)
+
+county18<-get_acs("county",survey = "acs1", key = "993d02931a941bd1f5af535c637800916aa504b2",variables=c("B28002_001","B28002_013","S1701_C03_002"))
+
+cty18_wide<-data.frame(county18$GEOID[county18$variable=="B28002_001"],
+                       county18$NAME[county18$variable=="B28002_001"],
+                       county18$estimate[county18$variable=="B28002_001"],
+                       county18$estimate[county18$variable=="B28002_013"],
+                       county18$estimate[county18$variable=="S1701_C03_002"])
+
+names(cty18_wide)<-c("GEOID","NAME","TOTPOP","NOINT","POVPCT")
+
+cty18_wide$INTPCT<- with(cty18_wide,round((1-(NOINT/TOTPOP))*100,1))
+
+plot_ly(x=cty18_wide$POVPCT,y=cty18_wide$INTPCT, type='scatter',mode='marker')      
+```
+
+## Slide with Plot
+
+```{r pressure}
+plot(pressure)
+```
+
